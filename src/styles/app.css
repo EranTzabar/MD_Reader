@@ -1,0 +1,240 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f5f5f7;
+  --surface: #ffffff;
+  --text: #1d1d1f;
+  --muted: #6e6e73;
+  --border: #d2d2d7;
+  --accent: #0071e3;
+  --accent-hover: #0077ed;
+  --code-bg: #f6f8fa;
+  --error-bg: #fff2f2;
+  --error-text: #b42318;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1c1c1e;
+    --surface: #2c2c2e;
+    --text: #f5f5f7;
+    --muted: #a1a1a6;
+    --border: #3a3a3c;
+    --accent: #0a84ff;
+    --accent-hover: #409cff;
+    --code-bg: #1f2428;
+    --error-bg: #3a1f1f;
+    --error-text: #ff9b98;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.toolbar-title {
+  font-weight: 600;
+  font-size: 14px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.toolbar-actions {
+  display: flex;
+  gap: 8px;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 8px 14px;
+}
+
+button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+button.primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+button:hover {
+  filter: brightness(0.98);
+}
+
+.content {
+  flex: 1;
+  overflow: auto;
+  padding: 24px;
+}
+
+.content-inner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.empty-state,
+.error-state,
+.loading-state {
+  max-width: 480px;
+  margin: 80px auto;
+  text-align: center;
+  padding: 32px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.empty-state h1,
+.error-state h1 {
+  margin: 0 0 12px;
+  font-size: 24px;
+}
+
+.empty-state p,
+.error-state p,
+.loading-state p {
+  margin: 0 0 20px;
+  color: var(--muted);
+}
+
+.error-state {
+  background: var(--error-bg);
+  border-color: var(--error-text);
+}
+
+.error-state p {
+  color: var(--error-text);
+}
+
+.drop-target {
+  min-height: 100%;
+}
+
+.drop-target.drag-over {
+  outline: 2px dashed var(--accent);
+  outline-offset: -8px;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+.markdown-view {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 32px 40px;
+}
+
+.markdown-view h1,
+.markdown-view h2,
+.markdown-view h3,
+.markdown-view h4 {
+  line-height: 1.25;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.markdown-view h1:first-child,
+.markdown-view h2:first-child,
+.markdown-view h3:first-child {
+  margin-top: 0;
+}
+
+.markdown-view p,
+.markdown-view ul,
+.markdown-view ol,
+.markdown-view blockquote,
+.markdown-view pre {
+  margin: 0 0 1em;
+}
+
+.markdown-view a {
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.markdown-view a:hover {
+  text-decoration: underline;
+}
+
+.markdown-view blockquote {
+  border-left: 4px solid var(--border);
+  padding-left: 16px;
+  color: var(--muted);
+}
+
+.markdown-view code {
+  font-family: Consolas, "Courier New", monospace;
+  background: var(--code-bg);
+  padding: 0.15em 0.35em;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.markdown-view pre {
+  overflow: auto;
+  border-radius: 8px;
+  padding: 16px;
+  background: var(--code-bg);
+}
+
+.markdown-view pre code {
+  background: none;
+  padding: 0;
+}
+
+.markdown-view table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1em;
+}
+
+.markdown-view th,
+.markdown-view td {
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.markdown-view img {
+  max-width: 100%;
+  height: auto;
+}
