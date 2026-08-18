@@ -112,6 +112,16 @@ button:hover {
   margin: 0 auto;
 }
 
+.content-inner--wide {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+}
+
+.content-inner--wide .markdown-view {
+  min-height: calc(100vh - 120px);
+}
+
 .empty-state,
 .error-state,
 .loading-state {

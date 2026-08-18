@@ -4,6 +4,7 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import { open } from "@tauri-apps/plugin-dialog";
 import { useCallback, useEffect, useState } from "react";
 import { MarkdownView } from "./components/MarkdownView";
+import { useLayoutPreference } from "./hooks/useLayoutPreference";
 import { useMarkdownFile } from "./hooks/useMarkdownFile";
 import "./styles/app.css";
 
@@ -14,6 +15,7 @@ function isMarkdownPath(path: string): boolean {
 
 function App() {
   const { path, content, loading, error, loadFile } = useMarkdownFile();
+  const { layout, toggleLayout } = useLayoutPreference();
   const [dragOver, setDragOver] = useState(false);
 
   const openFileDialog = useCallback(async () => {
@@ -89,6 +91,13 @@ function App() {
       <header className="toolbar">
         <div className="toolbar-title">{displayName}</div>
         <div className="toolbar-actions">
+          <button
+            type="button"
+            onClick={toggleLayout}
+            title={layout === "reading" ? "Switch to wide layout" : "Switch to reading width"}
+          >
+            {layout === "reading" ? "Wide layout" : "Reading width"}
+          </button>
           <button className="primary" type="button" onClick={() => void openFileDialog()}>
             Open
           </button>
@@ -96,7 +105,7 @@ function App() {
       </header>
 
       <main className={`content drop-target${dragOver ? " drag-over" : ""}`}>
-        <div className="content-inner">
+        <div className={`content-inner${layout === "wide" ? " content-inner--wide" : ""}`}>
           {loading && (
             <div className="loading-state">
               <p>Loading markdown…</p>
