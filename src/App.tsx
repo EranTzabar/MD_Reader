@@ -1,3 +1,4 @@
+import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { open } from "@tauri-apps/plugin-dialog";
@@ -5,10 +6,6 @@ import { useCallback, useEffect, useState } from "react";
 import { MarkdownView } from "./components/MarkdownView";
 import { useMarkdownFile } from "./hooks/useMarkdownFile";
 import "./styles/app.css";
-
-interface StartupPayload {
-  file_path: string | null;
-}
 
 function isMarkdownPath(path: string): boolean {
   const lower = path.toLowerCase();
@@ -34,13 +31,10 @@ function App() {
     const unlisteners: Array<() => void> = [];
 
     const setup = async () => {
-      unlisteners.push(
-        await listen<StartupPayload>("startup-file", (event) => {
-          if (event.payload.file_path) {
-            void loadFile(event.payload.file_path);
-          }
-        }),
-      );
+      const startupPath = await invoke<string | null>("get_startup_file");
+      if (startupPath) {
+        await loadFile(startupPath);
+      }
 
       unlisteners.push(
         await listen<string>("open-file", (event) => {

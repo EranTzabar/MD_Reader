@@ -1,29 +1,40 @@
 use std::fs;
+use std::sync::Mutex;
 use tauri::{Emitter, Manager};
 
-#[derive(Clone, serde::Serialize)]
-struct StartupPayload {
-    file_path: Option<String>,
+struct PendingFile(Mutex<Option<String>>);
+
+fn normalize_path_arg(arg: &str) -> String {
+    arg.trim().trim_matches('"').to_string()
 }
 
 fn extract_md_path_from_args(args: &[String]) -> Option<String> {
     args.iter()
         .skip(1)
+        .map(|arg| normalize_path_arg(arg))
         .find(|arg| {
+            if arg.is_empty() {
+                return false;
+            }
+
             let lower = arg.to_lowercase();
             lower.ends_with(".md") || lower.ends_with(".markdown")
         })
-        .cloned()
+}
+
+#[tauri::command]
+fn get_startup_file(state: tauri::State<PendingFile>) -> Option<String> {
+    state.0.lock().ok()?.take()
 }
 
 #[tauri::command]
 fn read_text_file(path: String) -> Result<String, String> {
-    let trimmed = path.trim();
+    let trimmed = normalize_path_arg(&path);
     if trimmed.is_empty() {
         return Err("No file path provided.".to_string());
     }
 
-    let meta = fs::metadata(trimmed).map_err(|e| format!("Cannot access file: {e}"))?;
+    let meta = fs::metadata(&trimmed).map_err(|e| format!("Cannot access file: {e}"))?;
     if !meta.is_file() {
         return Err("Path is not a file.".to_string());
     }
@@ -55,6 +66,10 @@ pub fn run() {
         .setup(|app| {
             use tauri::menu::{Menu, MenuItem, PredefinedMenuItem, Submenu};
 
+            let args: Vec<String> = std::env::args().collect();
+            let file_path = extract_md_path_from_args(&args);
+            app.manage(PendingFile(Mutex::new(file_path)));
+
             let open_item = MenuItem::with_id(app, "open", "Open...", true, None::<&str>)?;
             let exit_item = PredefinedMenuItem::quit(app, Some("Exit"))?;
             let file_menu = Submenu::with_items(app, "File", true, &[&open_item, &exit_item])?;
@@ -67,16 +82,9 @@ pub fn run() {
                 }
             });
 
-            let args: Vec<String> = std::env::args().collect();
-            let file_path = extract_md_path_from_args(&args);
-
-            if let Some(window) = app.get_webview_window("main") {
-                let _ = window.emit("startup-file", StartupPayload { file_path });
-            }
-
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![read_text_file])
+        .invoke_handler(tauri::generate_handler![read_text_file, get_startup_file])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
