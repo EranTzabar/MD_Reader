@@ -23,8 +23,8 @@ The installer registers MD Reader as a handler for `.md` files. Uninstalling rem
 
 Installed license files:
 
-- `LICENSE` — proprietary end-user license
-- `THIRD_PARTY_NOTICES.md` — open-source attributions
+- `LICENSE` — MIT license
+- `THIRD_PARTY_NOTICES.md` — open-source attributions for bundled dependencies
 
 ## Development prerequisites
 
@@ -74,10 +74,12 @@ Rust dependencies are audited via `src-tauri/deny.toml` (use `cargo deny check` 
 src/                 React UI
 src-tauri/           Tauri Rust shell
 scripts/             License audit scripts
-LICENSE              Proprietary EULA
-THIRD_PARTY_NOTICES.md  OSS attributions
+LICENSE              MIT license
+THIRD_PARTY_NOTICES.md  OSS attributions for dependencies
 ```
 
-## Commercial use
+## License
 
-You may publish and sell MD Reader commercially. Third-party libraries require attribution only (`THIRD_PARTY_NOTICES.md`). Your application code is proprietary unless you choose otherwise.
+MD Reader is released under the [MIT License](LICENSE). You may use, modify, and distribute it freely, including for commercial purposes.
+
+Third-party dependencies are listed in `THIRD_PARTY_NOTICES.md` and remain under their respective licenses.
